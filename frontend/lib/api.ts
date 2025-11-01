@@ -8,21 +8,6 @@ export interface DocumentResponse {
     file_type: string
     chunk_count: number
     processed_timestamp: string
-    // Guardian Score fields
-    guardian_score?: number
-    risk_level?: string
-    is_contract?: boolean
-    contract_type?: string
-    exploitation_flags?: Array<{
-        type: string
-        risk_level: string
-        description: string
-        clause_text: string
-        severity_score: number
-        recommendation: string
-        ai_recommendation: string
-    }>
-    analysis_summary?: string
 }
 
 export interface UploadResponse {
@@ -30,22 +15,6 @@ export interface UploadResponse {
     document_id: string
     processing_time: number
     total_chunks: number
-    // Contract analysis results
-    is_contract: boolean
-    contract_type?: string
-    classification_confidence: number
-    guardian_score?: number
-    risk_level?: string
-    exploitation_flags?: Array<{
-        type: string
-        risk_level: string
-        description: string
-        clause_text: string
-        severity_score: number
-        recommendation: string
-        ai_recommendation: string
-    }>
-    analysis_summary?: string
 }
 
 export interface AskResponse {

@@ -12,8 +12,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Contract Guardian",
-  description: "AI-powered contract analysis and risk assessment",
+  title: "Cerno Docs",
+  description: "AI-powered document intelligence and question-answering system",
   generator: "v0.app",
 }
 

@@ -7,8 +7,7 @@ import { Button } from "./ui/button"
 import { Card } from "./ui/card"
 import { Input } from "./ui/input"
 import { Avatar, AvatarFallback } from "./ui/avatar"
-import { Progress } from "./ui/progress"
-import { ArrowLeft, Upload, Send, FileText, ChevronDown, ChevronUp, Image, X } from "lucide-react"
+import { ArrowLeft, Upload, Send, FileText, Image, X } from "lucide-react"
 import type { Document } from "../app/page"
 import { ApiClient } from "../lib/api"
 
@@ -47,33 +46,20 @@ export function ChatInterface({ document, documents, onBack, onSelectDocument, o
     {
       id: "1",
       type: "ai",
-      content: `Hello! I've finished analyzing your document, **${document.document_title}**. Here's a quick summary of my findings. Feel free to ask me anything about it.
-
-**Overall Guardian Score: ${document.guardianScore}/100** (${getScoreText(document.guardianScore || 0)})
-
-**Key Risks Identified:** I've flagged clauses related to the non-refundable security deposit and the automatic lease renewal.
-
-What would you like to explore first?`,
+      content: `Hello! I'm Cerno Docs. I've analyzed your document, **${document.document_title}**. It contains ${document.chunk_count} sections that I can search through. Feel free to ask me any questions about it!`,
     },
   ])
   const [inputValue, setInputValue] = useState("")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isThinking, setIsThinking] = useState(false)
-  const [issuesExpanded, setIssuesExpanded] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<{ file: File, preview: string } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
 
-  function getScoreText(score: number) {
-    if (score >= 80) return "Low Risk"
-    if (score >= 60) return "Proceed with Caution"
-    return "High Risk"
-  }
-
   // Thinking animation component
   const ThinkingAnimation = () => (
     <div className="flex items-center space-x-1 text-zinc-500">
-      <span>Guardian is thinking</span>
+      <span>AI is thinking</span>
       <div className="flex space-x-1">
         <div className="w-1 h-1 bg-zinc-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
         <div className="w-1 h-1 bg-zinc-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
@@ -731,43 +717,6 @@ What would you like to explore first?`,
     }
   }
 
-  // Generate analysis data from document
-  const getAnalysisData = () => {
-    if (!document.is_contract || !document.exploitation_flags) {
-      return null
-    }
-
-    // Group exploitation flags by type for breakdown
-    const flagsByType: Record<string, any[]> = {}
-    document.exploitation_flags.forEach(flag => {
-      if (!flagsByType[flag.type]) {
-        flagsByType[flag.type] = []
-      }
-      flagsByType[flag.type].push(flag)
-    })
-
-    // Calculate average severity per type (inverse for display - lower severity = higher score)
-    const subScores = Object.entries(flagsByType).map(([type, flags]) => {
-      const avgSeverity = flags.reduce((sum, flag) => sum + flag.severity_score, 0) / flags.length
-      const displayScore = Math.max(10, 100 - avgSeverity) // Inverse of severity
-      return {
-        name: type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        score: Math.round(displayScore),
-        flagCount: flags.length
-      }
-    })
-
-    return {
-      guardianScore: document.guardian_score || 10,
-      riskLevel: document.risk_level || 'unknown',
-      subScores,
-      totalFlags: document.exploitation_flags.length,
-      contractType: document.contract_type
-    }
-  }
-
-  const analysisData = getAnalysisData()
-
   return (
     <div className={`${isEmbedded ? 'h-full' : 'min-h-screen'} ${isEmbedded ? 'bg-zinc-900' : 'bg-black'} ${isEmbedded ? 'text-white' : 'text-white'} flex`}>
       <input
@@ -858,9 +807,9 @@ What would you like to explore first?`,
                 {(message.type === "ai" || message.type === "thinking") && (
                   <div className="flex items-center gap-2 mb-1">
                     <Avatar className="w-4 h-4">
-                      <AvatarFallback className="bg-white text-black text-xs">CG</AvatarFallback>
+                      <AvatarFallback className="bg-white text-black text-xs">AI</AvatarFallback>
                     </Avatar>
-                    <span className="text-xs text-zinc-400">Contract Guardian</span>
+                    <span className="text-xs text-zinc-400">AI Assistant</span>
                   </div>
                 )}
                 <div
@@ -967,150 +916,6 @@ What would you like to explore first?`,
             </Button>
           </div>
         </div>
-      </div>
-
-      {/* Right Analysis Sidebar */}
-      <div className="w-64 border-l border-zinc-800 p-4 overflow-y-auto">
-        <h3 className="text-sm font-medium mb-4">Analysis</h3>
-
-        {/* Guardian Score Analysis */}
-        {analysisData ? (
-          <>
-            {/* Overall Score */}
-            <Card className="bg-zinc-900 border-zinc-800 p-4 mb-4">
-              <div className="text-center">
-                <div className="relative w-16 h-16 mx-auto mb-2">
-                  <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      stroke="currentColor"
-                      strokeWidth="8"
-                      fill="transparent"
-                      className="text-zinc-700"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      stroke="currentColor"
-                      strokeWidth="8"
-                      fill="transparent"
-                      strokeDasharray={`${2 * Math.PI * 40}`}
-                      strokeDashoffset={`${2 * Math.PI * 40 * (1 - analysisData.guardianScore / 100)}`}
-                      className="text-zinc-400"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-lg font-medium text-white">{analysisData.guardianScore}</span>
-                  </div>
-                </div>
-                <p className="text-xs text-zinc-400">Guardian Score</p>
-                <p className="text-xs font-medium text-zinc-300 capitalize">
-                  {analysisData.riskLevel.replace('_', ' ')} Risk
-                </p>
-                <p className="text-xs text-zinc-500 mt-1">
-                  {analysisData.contractType?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} Contract
-                </p>
-              </div>
-            </Card>
-
-            {/* Risk Breakdown */}
-            {analysisData.subScores.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-xs font-medium text-zinc-400 mb-2">Risk Breakdown</h4>
-                <div className="space-y-2">
-                  {analysisData.subScores.map((item) => {
-                    // Determine color based on score (lower scores = higher risk = red)
-                    const getProgressColor = (score: number) => {
-                      if (score >= 70) return "bg-green-500"    // Good - Green
-                      if (score >= 40) return "bg-yellow-500"   // Medium - Yellow  
-                      return "bg-red-500"                       // Bad - Red
-                    }
-
-                    const progressColor = getProgressColor(item.score)
-
-                    return (
-                      <div key={item.name}>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-zinc-300">{item.name}</span>
-                          <span className="text-zinc-400">{item.score}</span>
-                        </div>
-                        <div className="relative h-1 w-full overflow-hidden rounded-full bg-zinc-700">
-                          <div
-                            className={`h-full transition-all ${progressColor}`}
-                            style={{ width: `${item.score}%` }}
-                          />
-                        </div>
-                        <p className="text-xs text-zinc-500 mt-1">{item.flagCount} issue{item.flagCount !== 1 ? 's' : ''}</p>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Exploitation Flags Summary */}
-            {document.exploitation_flags && document.exploitation_flags.length > 0 && (
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xs font-medium text-zinc-400">Issues Found</h4>
-                  <button
-                    onClick={() => setIssuesExpanded(!issuesExpanded)}
-                    className="text-xs text-zinc-500 hover:text-zinc-300 flex items-center gap-1"
-                  >
-                    {issuesExpanded ? (
-                      <>
-                        Collapse <ChevronUp className="w-3 h-3" />
-                      </>
-                    ) : (
-                      <>
-                        Show All ({document.exploitation_flags.length}) <ChevronDown className="w-3 h-3" />
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <div className="space-y-1">
-                  {(issuesExpanded ? document.exploitation_flags : document.exploitation_flags.slice(0, 3)).map((flag, index) => (
-                    <button
-                      key={index}
-                      className="w-full text-left p-2 rounded bg-zinc-800 hover:bg-zinc-700 transition-colors text-xs text-zinc-300 hover:text-white"
-                      onClick={() => setInputValue(`Explain the ${flag.type.replace('_', ' ')} issue in detail`)}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium">{flag.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
-                          <div className="text-zinc-500 text-xs mt-1 break-words">{flag.description}</div>
-                          {flag.clause_text && (
-                            <div className="text-zinc-600 text-xs mt-1 italic truncate">"{flag.clause_text}"</div>
-                          )}
-                        </div>
-                        <div className="text-xs text-zinc-500 capitalize shrink-0">
-                          {flag.risk_level}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-
-                  {!issuesExpanded && document.exploitation_flags.length > 3 && (
-                    <div className="text-xs text-zinc-500 px-2 py-1 text-center">
-                      +{document.exploitation_flags.length - 3} more issues
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          <Card className="bg-zinc-900 border-zinc-800 p-4">
-            <p className="text-xs text-zinc-400 text-center">
-              Upload a contract to see Guardian Score analysis
-            </p>
-          </Card>
-        )}
       </div>
     </div>
   )

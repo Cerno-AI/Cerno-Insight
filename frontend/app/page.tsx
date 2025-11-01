@@ -5,16 +5,6 @@ import { DocumentLibrary } from "../components/document-library"
 import { TwoColumnChat } from "../components/two-column-chat"
 import { ApiClient } from "../lib/api"
 
-export type ExploitationFlag = {
-  type: string
-  risk_level: string
-  description: string
-  clause_text: string
-  severity_score: number
-  recommendation: string
-  ai_recommendation: string
-}
-
 export type Document = {
   document_id: string
   document_url: string
@@ -22,16 +12,7 @@ export type Document = {
   file_type: string
   processed_timestamp: string
   chunk_count: number
-  guardianScore?: number // Legacy field for compatibility
   isProcessing?: boolean
-  // Guardian Score analysis results (backend format)
-  guardian_score?: number
-  is_contract?: boolean
-  contract_type?: string
-  classification_confidence?: number
-  risk_level?: string
-  exploitation_flags?: ExploitationFlag[]
-  analysis_summary?: string
 }
 
 const mockDocuments: Document[] = [
@@ -42,7 +23,6 @@ const mockDocuments: Document[] = [
     file_type: "pdf",
     processed_timestamp: "2023-10-26T00:00:00Z",
     chunk_count: 15,
-    guardianScore: 68,
   },
   {
     document_id: "2",
@@ -51,7 +31,6 @@ const mockDocuments: Document[] = [
     file_type: "pdf",
     processed_timestamp: "2023-10-24T00:00:00Z",
     chunk_count: 23,
-    guardianScore: 92,
   },
   {
     document_id: "3",
@@ -60,7 +39,6 @@ const mockDocuments: Document[] = [
     file_type: "pdf",
     processed_timestamp: "2023-10-22T00:00:00Z",
     chunk_count: 8,
-    guardianScore: 45,
   },
 ]
 
@@ -110,7 +88,6 @@ export default function Home() {
           file_type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
           processed_timestamp: new Date().toISOString(),
           chunk_count: 0,
-          guardianScore: 0,
           isProcessing: true,
         }
 
@@ -131,15 +108,6 @@ export default function Home() {
                   file_type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
                   processed_timestamp: new Date().toISOString(),
                   chunk_count: response.total_chunks,
-                  // Use actual Guardian Score analysis from backend
-                  guardianScore: response.guardian_score || undefined,
-                  guardian_score: response.guardian_score || undefined, // Keep backend format too
-                  is_contract: response.is_contract || false,
-                  contract_type: response.contract_type || undefined,
-                  classification_confidence: response.classification_confidence || 0,
-                  risk_level: response.risk_level || undefined,
-                  exploitation_flags: response.exploitation_flags || undefined,
-                  analysis_summary: response.analysis_summary || undefined,
                   isProcessing: false,
                 }
                 : doc

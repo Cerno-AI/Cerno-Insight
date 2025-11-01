@@ -20,18 +20,6 @@ export function DocumentLibrary({ documents, onSelectDocument, onFileUpload, onD
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = useState(false)
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "bg-green-500"
-    if (score >= 60) return "bg-yellow-500"
-    return "bg-red-500"
-  }
-
-  const getScoreText = (score: number) => {
-    if (score >= 80) return "Low Risk"
-    if (score >= 60) return "Medium Risk"
-    return "High Risk"
-  }
-
   const handleUploadClick = () => {
     fileInputRef.current?.click()
   }
@@ -100,9 +88,9 @@ export function DocumentLibrary({ documents, onSelectDocument, onFileUpload, onD
 
       <header className="border-b border-zinc-800 px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <h1 className="text-lg font-medium text-white">Contract Guardian</h1>
+          <h1 className="text-lg font-medium text-white">Cerno Docs</h1>
           <Avatar className="w-7 h-7">
-            <AvatarFallback className="bg-zinc-800 text-white text-sm">CG</AvatarFallback>
+            <AvatarFallback className="bg-zinc-800 text-white text-sm">CD</AvatarFallback>
           </Avatar>
         </div>
       </header>
@@ -116,29 +104,6 @@ export function DocumentLibrary({ documents, onSelectDocument, onFileUpload, onD
             <Upload className="w-4 h-4 mr-2" />
             Upload
           </Button>
-        </div>
-
-        {/* Test Contracts Notice */}
-        <div className="mb-6">
-          <Card className="bg-blue-950/30 border-blue-800/50 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0">
-                <FileText className="w-5 h-5 text-blue-400 mt-0.5" />
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-blue-300 mb-1">
-                  Test the Guardian Score System
-                </h3>
-                <p className="text-xs text-blue-200/80 leading-relaxed">
-                  Want to see how the system detects malicious contract clauses? Try uploading test contracts from
-                  <code className="mx-1 px-1.5 py-0.5 bg-blue-900/50 rounded text-blue-200 font-mono text-xs">
-                    /test_contracts
-                  </code>
-                  including the problematic rental agreement and shady employment contract. These contain exploitation patterns like excessive penalties, unfair termination clauses, and rights violations that the AI will flag.
-                </p>
-              </div>
-            </div>
-          </Card>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -185,48 +150,8 @@ export function DocumentLibrary({ documents, onSelectDocument, onFileUpload, onD
                         year: "numeric",
                       })}
                     </p>
-
-                    {/* Guardian Score Progress Bar */}
-                    {!document.isProcessing && (document.guardianScore || document.guardian_score) && (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-zinc-400">Guardian Score</span>
-                          <span className="text-sm font-medium text-white">
-                            {document.guardianScore || document.guardian_score}
-                          </span>
-                        </div>
-
-                        {/* Progress Bar */}
-                        <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
-                          <div
-                            className={`h-full transition-all duration-700 ease-out ${getScoreColor(document.guardianScore || document.guardian_score || 0)}`}
-                            style={{ width: `${document.guardianScore || document.guardian_score}%` }}
-                          />
-                        </div>
-
-                        <div className="text-xs text-zinc-500">
-                          {getScoreText(document.guardianScore || document.guardian_score || 0)}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
-
-                {/* Additional Info */}
-                {!document.isProcessing && (document.guardianScore || document.guardian_score) && (
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-zinc-900">
-                    {(document.is_contract || document.contract_type) && (
-                      <div className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md font-medium border border-blue-500">
-                        {document.contract_type?.toUpperCase() || 'CONTRACT'}
-                      </div>
-                    )}
-                    {(document.exploitation_flags && document.exploitation_flags.length > 0) && (
-                      <div className="bg-red-900/20 text-red-400 text-xs px-2 py-1 rounded">
-                        {document.exploitation_flags.length} issue{document.exploitation_flags.length !== 1 ? 's' : ''}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </Card>
           ))}
