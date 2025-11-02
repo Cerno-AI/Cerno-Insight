@@ -1,4 +1,4 @@
-# Cerno Docs
+# Cerno insight
 
 <div align="center">
 
