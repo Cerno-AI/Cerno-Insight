@@ -22,6 +22,8 @@
 
 A high-performance Retrieval-Augmented Generation (RAG) system for intelligent document processing and question-answering. Upload documents in multiple formats and ask questions to get precise, citation-backed answers using state-of-the-art Language Models and hybrid retrieval strategies.
 
+![Cerno Insight Interface](screenshots/screenshot.png)
+
 **Quick Start**: `docker compose up --build -d` → Visit http://localhost:3000
 
 📖 **Full Documentation**: See [Explanation.md](./Explanation.md) for technical deep-dive
@@ -46,6 +48,8 @@ docker compose up --build -d
 ```
 
 That's it! Upload a document and start asking questions. 🎉
+
+
 
 ## Table of Contents
 
