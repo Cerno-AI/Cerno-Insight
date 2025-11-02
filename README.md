@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Cerno Docs Banner](https://img.shields.io/badge/Cerno-Docs-blue?style=for-the-badge)
+![Cerno Insight Banner](https://img.shields.io/badge/Cerno-Insight-blue?style=for-the-badge)
 
 **A high-performance RAG system for intelligent document Q&A**
 
@@ -30,8 +30,8 @@ A high-performance Retrieval-Augmented Generation (RAG) system for intelligent d
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/cerno-ai/cerno-docs.git
-cd cerno-docs
+git clone https://github.com/cerno-ai/cerno-insight.git
+cd cerno-insight
 
 # 2. Set up environment
 cp .env.sample .env
@@ -461,8 +461,8 @@ For security concerns, please review our [Security Policy](SECURITY.md) and repo
 
 ## 📬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/cerno-ai/cerno-docs/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/cerno-ai/cerno-docs/discussions)
+- **Issues**: [GitHub Issues](https://github.com/cerno-ai/cerno-insight/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/cerno-ai/cerno-insight/discussions)
 - **Documentation**: [Explanation.md](./Explanation.md) | [Installation Guide](./INSTALLATION.md)
 
 ---
@@ -470,7 +470,5 @@ For security concerns, please review our [Security Policy](SECURITY.md) and repo
 <div align="center">
 
 **⭐ Star this repository if you find it helpful!**
-
-Made with ❤️ by the Cerno Docs community
 
 </div>
